@@ -10,6 +10,7 @@ import com.neta.api.core.product.Product;
 import com.neta.product.entity.ProductEntity;
 import com.neta.product.entity.ProductMapper;
 import com.neta.product.persistence.ProductRepository;
+import com.neta.util.exception.InvalidInputException;
 import com.neta.util.exception.NotFoundException;
 import com.neta.util.http.ServiceUtil;
 
@@ -49,16 +50,18 @@ public class ProductService {
 			return mapper.entityToApi( newEntity );
 
 		} catch (DuplicateKeyException e) {
-			throw new IllegalArgumentException( "product is duplicate" );
+			throw new InvalidInputException( "Duplicate key, Product Id: " + product.getProductId() );
 		}
 	}
 
 	public Product getProduct(int productId) {
 
-		LOG.debug( "getProduct: attempt to retrieve product with productId" + productId );
+		LOG.debug( "getProduct: attempt to retrieve product with productId " + productId );
+		
+		if(productId < 1) throw new InvalidInputException("Invalid productId: " + productId);
 
 		ProductEntity entity = repository.findByProductId( productId )
-				.orElseThrow( () -> new NotFoundException( "No product found for productId:" + productId ) );
+				.orElseThrow( () -> new NotFoundException( "No product found for productId: " + productId ) );
 
 		Product response = mapper.entityToApi( entity );
 		response.setServiceAddress( serviceUtil.getServiceAddress() );
