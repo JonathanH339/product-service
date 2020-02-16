@@ -1,3 +1,5 @@
 rootProject.name = 'product-service'
-include ':product-services-api'
-include ':product-services-util'
+include 'product-services-api'
+project(':product-services-api').projectDir = new File('../product-services-api')
+include 'product-services-util'
+project(':product-services-util').projectDir = new File('../product-services-util')
