@@ -79,3 +79,11 @@ bin/
 .settings/
 .classpath
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+
