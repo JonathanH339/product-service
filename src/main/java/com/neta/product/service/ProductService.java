@@ -38,8 +38,10 @@ public class ProductService {
 
 	public Product createProduct(Product product) {
 
-		LOG.debug( "createProduct: accepted product with productId" + product.getProductId() );
-
+		LOG.debug( "createProduct: attempting to create product with productId" + product.getProductId() );
+		
+		if(product.getProductId() < 1) throw new InvalidInputException("Invalid productId: " + product.getProductId() );
+		
 		try {
 
 			ProductEntity entity = mapper.apiToEntity( product );
