@@ -1,5 +1,3 @@
-
-
 package com.neta.product.service;
 
 import org.springframework.stereotype.Service;
@@ -21,16 +19,14 @@ import org.springframework.dao.DuplicateKeyException;
 public class ProductService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( ProductService.class );
-
+	
 	private final ProductRepository repository;
-
 	private final ProductMapper mapper;
-
 	private final ServiceUtil serviceUtil;
 
 	@Autowired
 	public ProductService(ProductRepository repository, ProductMapper mapper, ServiceUtil serviceUtil) {
-		super();
+
 		this.repository = repository;
 		this.mapper = mapper;
 		this.serviceUtil = serviceUtil;;
@@ -39,9 +35,10 @@ public class ProductService {
 	public Product createProduct(Product product) {
 
 		LOG.debug( "createProduct: attempting to create product with productId" + product.getProductId() );
-		
-		if(product.getProductId() < 1) throw new InvalidInputException("Invalid productId: " + product.getProductId() );
-		
+
+		if (product.getProductId() < 1)
+			throw new InvalidInputException( "Invalid productId: " + product.getProductId() );
+
 		try {
 
 			ProductEntity entity = mapper.apiToEntity( product );
@@ -50,8 +47,8 @@ public class ProductService {
 			LOG.debug( "createProduct: entity created for productId: {}", product.getProductId() );
 
 			return mapper.entityToApi( newEntity );
-
 		} catch (DuplicateKeyException e) {
+
 			throw new InvalidInputException( "Duplicate key, Product Id: " + product.getProductId() );
 		}
 	}
@@ -59,8 +56,8 @@ public class ProductService {
 	public Product getProduct(int productId) {
 
 		LOG.debug( "getProduct: attempt to retrieve product with productId " + productId );
-		
-		if(productId < 1) throw new InvalidInputException("Invalid productId: " + productId);
+
+		if (productId < 1) throw new InvalidInputException( "Invalid productId: " + productId );
 
 		ProductEntity entity = repository.findByProductId( productId )
 				.orElseThrow( () -> new NotFoundException( "No product found for productId: " + productId ) );
@@ -69,15 +66,11 @@ public class ProductService {
 		response.setServiceAddress( serviceUtil.getServiceAddress() );
 
 		return response;
-
 	}
 
 	public void deleteProduct(int productId) {
 
 		LOG.debug( "deleteProduct: attempts to delete product with prodictId:{}", productId );
-
 		repository.findByProductId( productId ).ifPresent( e -> repository.delete( e ) );
-
 	}
-
 }

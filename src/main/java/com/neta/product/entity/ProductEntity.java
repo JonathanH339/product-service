@@ -1,5 +1,3 @@
-
-
 package com.neta.product.entity;
 
 import org.springframework.data.annotation.Id;
@@ -20,9 +18,7 @@ public class ProductEntity {
 	private int productId;
 
 	private String name;
-
 	private String description;
-
 	private double price;
 
 	public ProductEntity() {
@@ -30,6 +26,7 @@ public class ProductEntity {
 	}
 
 	public ProductEntity(int productId, String name, String description, double price) {
+
 		this.productId = productId;
 		this.name = name;
 		this.description = description;
@@ -37,50 +34,62 @@ public class ProductEntity {
 	}
 
 	public String getId() {
+
 		return id;
 	}
 
 	public void setId(String id) {
+
 		this.id = id;
 	}
 
 	public Integer getVersion() {
+
 		return version;
 	}
 
 	public void setVersion(Integer version) {
+
 		this.version = version;
 	}
 
 	public int getProductId() {
+
 		return productId;
 	}
 
 	public void setProductId(int productId) {
+
 		this.productId = productId;
 	}
 
 	public String getName() {
+
 		return name;
 	}
 
 	public void setName(String name) {
+
 		this.name = name;
 	}
 
 	public String getDescription() {
+
 		return description;
 	}
 
 	public void setDescription(String description) {
+
 		this.description = description;
 	}
 
 	public double getPrice() {
+
 		return price;
 	}
 
 	public void setPrice(double price) {
+
 		this.price = price;
 	}
 }

@@ -1,5 +1,3 @@
-
-
 package com.neta.product.controller;
 
 import org.slf4j.Logger;
@@ -26,6 +24,7 @@ public class ProductController implements ProductServiceAPI {
 
 	@Override
 	public Product createProduct(Product product) {
+
 		LOG.debug( "Received request to create product with productId: {} ", product.getProductId() );
 		return service.createProduct( product );
 	}
@@ -35,14 +34,12 @@ public class ProductController implements ProductServiceAPI {
 
 		LOG.debug( "Received request to get product with productId: {} ", productId );
 		return service.getProduct( productId );
-
 	}
 
 	@Override
 	public void deleteProduct(int productId) {
+
 		LOG.debug( "Received request to delete product with productId: {} ", productId );
 		service.deleteProduct( productId );
-
 	}
-
 }

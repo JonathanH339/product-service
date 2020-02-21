@@ -1,5 +1,3 @@
-
-
 package com.neta.product;
 
 import org.slf4j.Logger;
@@ -23,6 +21,7 @@ public class ProductServiceApplication {
 
 		String mongodDbHost = ctx.getEnvironment().getProperty( "spring.data.mongodb.host" );
 		String mongodDbPort = ctx.getEnvironment().getProperty( "spring.data.mongodb.port" );
+		
 		LOG.info( "Connected to MongoDb: " + mongodDbHost + ":" + mongodDbPort );
 
 	}
