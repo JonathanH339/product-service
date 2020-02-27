@@ -1,14 +1,14 @@
 package com.neta.product.persistence;
 
-import java.util.Optional;
-
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.neta.product.entity.ProductEntity;
 
-@Repository
-public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, String> {
+import reactor.core.publisher.Mono;
 
-	Optional<ProductEntity> findByProductId(int productId);
+@Repository
+public interface ProductRepository extends ReactiveCrudRepository<ProductEntity, String> {
+
+	Mono<ProductEntity> findByProductId(int productId);
 }
