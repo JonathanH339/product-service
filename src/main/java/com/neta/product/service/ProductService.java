@@ -12,14 +12,18 @@ import com.neta.util.exception.InvalidInputException;
 import com.neta.util.exception.NotFoundException;
 import com.neta.util.http.ServiceUtil;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+
+import static reactor.core.publisher.Mono.error;
 
 @Service
 public class ProductService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( ProductService.class );
-	
+
 	private final ProductRepository repository;
 	private final ProductMapper mapper;
 	private final ServiceUtil serviceUtil;
@@ -39,38 +43,38 @@ public class ProductService {
 		if (product.getProductId() < 1)
 			throw new InvalidInputException( "Invalid productId: " + product.getProductId() );
 
-		try {
+		ProductEntity entity = mapper.apiToEntity( product );
+		Mono<Product> newEntity = repository.save( entity )
+				.log()
+				.onErrorMap( DuplicateKeyException.class,
+						ex -> new InvalidInputException( "Duplicate key, Product Id: " + product.getProductId() ) )
+				.map( e -> mapper.entityToApi( entity ) );
 
-			ProductEntity entity = mapper.apiToEntity( product );
-			ProductEntity newEntity = repository.save( entity );
+		return newEntity.block();
 
-			LOG.debug( "createProduct: entity created for productId: {}", product.getProductId() );
-
-			return mapper.entityToApi( newEntity );
-		} catch (DuplicateKeyException e) {
-
-			throw new InvalidInputException( "Duplicate key, Product Id: " + product.getProductId() );
-		}
 	}
 
-	public Product getProduct(int productId) {
+	public Mono<Product> getProduct(int productId) {
 
 		LOG.debug( "getProduct: attempt to retrieve product with productId " + productId );
 
 		if (productId < 1) throw new InvalidInputException( "Invalid productId: " + productId );
 
-		ProductEntity entity = repository.findByProductId( productId )
-				.orElseThrow( () -> new NotFoundException( "No product found for productId: " + productId ) );
+		return repository.findByProductId( productId )
+				.switchIfEmpty( error( new NotFoundException( "No Product found for productId: " + productId ) ) )
+				.log()
+				.map( e -> mapper.entityToApi( e ) )
+				.map( e -> {
 
-		Product response = mapper.entityToApi( entity );
-		response.setServiceAddress( serviceUtil.getServiceAddress() );
+					e.setServiceAddress( serviceUtil.getServiceAddress() );
+					return e;
+				} );
 
-		return response;
 	}
 
 	public void deleteProduct(int productId) {
 
 		LOG.debug( "deleteProduct: attempts to delete product with prodictId:{}", productId );
-		repository.findByProductId( productId ).ifPresent( e -> repository.delete( e ) );
+		repository.findByProductId( productId ).log().map( e -> repository.delete( e ) ).flatMap( e -> e ).block();
 	}
 }
