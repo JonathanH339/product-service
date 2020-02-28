@@ -9,6 +9,8 @@ import com.neta.api.core.product.Product;
 import com.neta.api.core.product.ProductServiceAPI;
 import com.neta.product.service.ProductService;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 public class ProductController implements ProductServiceAPI {
 
@@ -30,7 +32,7 @@ public class ProductController implements ProductServiceAPI {
 	}
 
 	@Override
-	public Product getProduct(int productId) {
+	public Mono<Product> getProduct(int productId) {
 
 		LOG.debug( "Received request to get product with productId: {} ", productId );
 		return service.getProduct( productId );
